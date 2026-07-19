@@ -2,7 +2,9 @@
 
 Un widget de clima elegante, transparente y nativo para entornos **Wayland** (especialmente diseñado para **Pop!_OS COSMIC** y similares). Creado con Python, GTK3 y `gtk-layer-shell`.
 
-<!-- Puedes subir una captura de pantalla arrastrando la imagen aquí si editas esto en la página de GitHub -->
+<img width="467" height="339" alt="widget" src="https://github.com/user-attachments/assets/c27f85b8-1e2d-453a-9f4b-9498490b6cf3" />
+<img width="590" height="661" alt="conf-widget" src="https://github.com/user-attachments/assets/f54bfa26-0ae8-40f0-9dec-2018b382de86" />
+
 
 ## ✨ Características Principales
 * **Nativo y Transparente:** Utiliza el protocolo Wayland Layer Shell para anclarse directamente al escritorio, sin botones de ventana, sin bordes y sin aparecer en la barra de tareas.
