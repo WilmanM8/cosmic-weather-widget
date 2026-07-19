@@ -1,0 +1,53 @@
+/* Tipografía y estilos base */
+* {
+    font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+window {
+    background-color: transparent;
+}
+
+/* Contenedor principal con efecto Glassmorphism */
+.widget-container {
+    background-color: rgba(30, 30, 30, 0.6); /* Fondo semi-transparente oscuro */
+    border-radius: 16px;                     /* Bordes muy redondeados */
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Borde blanco fino y tenue */
+    padding: 24px;
+    margin: 10px; /* Margen de seguridad para no cortar el borde/sombra */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Sombra para dar profundidad */
+    
+    /* Nota: GTK4 no soporta nativamente backdrop-filter en CSS estándar.
+       Dependiendo del compositor de Wayland (COSMIC/Mutter), el blur se puede aplicar.
+       Si no, el color rgba ya proporciona un efecto glass moderno. */
+}
+
+/* Icono del clima */
+.weather-icon {
+    font-size: 48px;
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Temperatura */
+.temperature {
+    font-size: 48px;
+    font-weight: 700; /* Bold */
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Descripción del clima (ej: Despejado, Lluvia) */
+.weather-desc {
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 5px;
+}
+
+/* Etiqueta de la ciudad */
+.city-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6); /* Gris claro / blanco con menos opacidad */
+    margin-top: 5px;
+}
