@@ -1,9 +1,11 @@
 import sys
 import json
 import os
+# pyrefly: ignore [missing-import]
 import gi
 
 gi.require_version('Gtk', '3.0')
+# pyrefly: ignore [missing-import]
 from gi.repository import Gtk, Gdk
 
 CONFIG_DIR = os.path.expanduser("~/.config/cosmic-weather-widget")
@@ -20,6 +22,7 @@ class ConfigApp(Gtk.Window):
         super().__init__(title="Configuración de Clima COSMIC")
         self.set_default_size(500, 600)
         self.set_border_width(20)
+        self.apply_css()
 
         self.config = {}
         if os.path.exists(CONFIG_FILE):
@@ -136,8 +139,8 @@ class ConfigApp(Gtk.Window):
         vbox.pack_start(Gtk.Separator(), False, False, 10)
 
         # --- Botón para Cerrar el Widget ---
-        close_btn = Gtk.Button(label="❌ Cerrar y salir del Widget del Escritorio")
-        close_btn.get_style_context().add_class("destructive-action")
+        close_btn = Gtk.Button(label="Cerrar y salir del Widget del Escritorio")
+        close_btn.get_style_context().add_class("close-widget-button")
         close_btn.connect("clicked", self.on_close_widget)
         vbox.pack_start(close_btn, False, False, 10)
 
@@ -209,6 +212,37 @@ class ConfigApp(Gtk.Window):
 
     def on_close_widget(self, button):
         os.system("pkill -f weather_widget.py")
+
+    def apply_css(self):
+        try:
+            screen = Gdk.Screen.get_default()
+            if screen is not None:
+                css = b"""
+                .close-widget-button {
+                    background-image: none;
+                    background-color: #000000;
+                    color: #ffffff;
+                    border: 2px solid #808080;
+                    border-radius: 6px;
+                    padding: 8px 16px;
+                    font-weight: bold;
+                }
+                .close-widget-button:hover {
+                    background-image: none;
+                    background-color: #d3d3d3;
+                    color: #000000;
+                    border: 2px solid #000000;
+                }
+                """
+                provider = Gtk.CssProvider()
+                provider.load_from_data(css)
+                Gtk.StyleContext.add_provider_for_screen(
+                    screen,
+                    provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+        except Exception as e:
+            print(f"Advertencia: No se pudo cargar el CSS personalizado ({e})", file=sys.stderr)
 
     def on_font_combo_changed(self, combo):
         font_id = combo.get_active_id()
