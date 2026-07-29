@@ -1,4 +1,5 @@
 import sys
+# pyrefly: ignore [missing-import]
 import gi
 import threading
 import json
@@ -7,6 +8,7 @@ import os
 gi.require_version('Gtk', '3.0')
 gi.require_version('GtkLayerShell', '0.1')
 gi.require_version('PangoCairo', '1.0')
+# pyrefly: ignore [missing-import]
 from gi.repository import Gtk, Gdk, GtkLayerShell, GLib, Gio, PangoCairo
 from weather_api import get_location, get_weather
 
