@@ -202,9 +202,12 @@ class WeatherWidget(Gtk.Window):
         self.css_provider.load_from_data(css_data.encode('utf-8'))
 
     def setup_file_monitor(self):
-        gfile = Gio.File.new_for_path(CONFIG_FILE)
-        self.monitor = gfile.monitor_file(Gio.FileMonitorFlags.NONE, None)
-        self.monitor.connect("changed", self.on_config_changed)
+        try:
+            gfile = Gio.File.new_for_path(CONFIG_FILE)
+            self.monitor = gfile.monitor_file(Gio.FileMonitorFlags.NONE, None)
+            self.monitor.connect("changed", self.on_config_changed)
+        except Exception as e:
+            print(f"Advertencia: No se pudo iniciar el monitoreo del archivo de configuración: {e}")
 
     def on_config_changed(self, monitor, file, other_file, event_type):
         if event_type == Gio.FileMonitorEvent.CHANGES_DONE_HINT or event_type == Gio.FileMonitorEvent.CREATED:
@@ -226,10 +229,17 @@ class WeatherWidget(Gtk.Window):
     def on_button_press(self, widget, event):
         if event.button == 1: # Clic izquierdo para arrastrar
             self.dragging = True
-            self.start_x = event.x_root
-            self.start_y = event.y_root
-            self.start_margin_x = self.margin_x
-            self.start_margin_y = self.margin_y
+            # Detectar si estamos bajo Wayland para usar el modo de arrastre relativo
+            self.is_wayland = "wayland" in os.environ.get("XDG_SESSION_TYPE", "").lower() or "WAYLAND_DISPLAY" in os.environ
+            
+            if self.is_wayland:
+                self.start_x = event.x
+                self.start_y = event.y
+            else:
+                self.start_x = event.x_root
+                self.start_y = event.y_root
+                self.start_margin_x = self.margin_x
+                self.start_margin_y = self.margin_y
         elif event.button == 3: # Clic derecho para menú
             self.show_context_menu(event)
         return True
@@ -256,11 +266,18 @@ class WeatherWidget(Gtk.Window):
 
     def on_motion_notify(self, widget, event):
         if getattr(self, 'dragging', False):
-            dx = event.x_root - self.start_x
-            dy = event.y_root - self.start_y
-            
-            self.margin_x = int(self.start_margin_x + dx)
-            self.margin_y = int(self.start_margin_y + dy)
+            if getattr(self, 'is_wayland', False):
+                # Arrastre relativo para Wayland (donde x_root/y_root no son globales)
+                dx = event.x - self.start_x
+                dy = event.y - self.start_y
+                self.margin_x = int(self.margin_x + dx)
+                self.margin_y = int(self.margin_y + dy)
+            else:
+                # Arrastre absoluto para X11
+                dx = event.x_root - self.start_x
+                dy = event.y_root - self.start_y
+                self.margin_x = int(self.start_margin_x + dx)
+                self.margin_y = int(self.start_margin_y + dy)
             
             if self.margin_x < 0: self.margin_x = 0
             if self.margin_y < 0: self.margin_y = 0
